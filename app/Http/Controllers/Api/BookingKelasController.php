@@ -20,7 +20,7 @@ class BookingKelasController extends Controller
                 return [
                     'nama_pelanggan'  => $booking->pelanggan->name,
                     'email'           => $booking->pelanggan->email,
-                    'tanggal_join'    => $booking->pelanggan->membership->start_date ?? null,
+                    'tanggal_join'    => $booking->pelanggan->join_date ?? null,
                     'tanggal_expired' => $booking->pelanggan->membership->end_date ?? null,
                     'kelas_diambil'   => $booking->kelas->name,
                     'waktu_booking'   => $booking->booking_time,
