@@ -18,6 +18,16 @@ class PelangganController extends Controller
         return new PostResource(true, 'List Data Pelanggan', $pelanggans);
     }
 
+    public function active()
+    {
+        // Ambil hanya pelanggan yang statusnya 'active'
+        $pelanggans = Pelanggan::where('status', 'active')
+            ->latest()
+            ->get();
+        // Return response dengan resource standar
+        return new PostResource(true, 'List Pelanggan Aktif', $pelanggans);
+    }
+
     public function store(Request $request)
     {
         //define validation rules
