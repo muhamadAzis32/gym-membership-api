@@ -40,7 +40,11 @@ class MembershipController extends Controller
 
         //check if validation fails
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors'  => $validator->errors(),
+            ], 422);
         }
 
         //create
