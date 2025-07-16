@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use App\Models\BookingKelas;
+use App\Models\KelasGym;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -59,6 +61,28 @@ class BookingKelasController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Member sudah melakukan booking untuk kelas ini pada tanggal yang sama.',
+            ], 409);
+        }
+
+        // cek quota booking
+        $count = BookingKelas::where('class_id', $request->class_id)->count();
+        $quota = KelasGym::where('id', $request->class_id)->value('quota');
+        if ($count >= $quota) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kelas sudah penuh!',
+            ], 409);
+
+        }
+        
+        // cek membership
+        $membership = Membership::where('member_id', $request->member_id)
+            ->orderBy('end_date', 'desc')
+            ->first();
+        if (! $membership || $request->booking_time > $membership->end_date) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Membership tidak aktif atau sudah expired!',
             ], 409);
         }
 
