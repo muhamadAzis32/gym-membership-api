@@ -12,7 +12,17 @@ class MembershipController extends Controller
     public function index()
     {
         //get all Memberships
-        $memberships = Membership::latest()->get();
+        $memberships = Membership::with('pelanggan')
+            ->latest()
+            ->get()
+            ->map(function ($membership) {
+                return [
+                    'nama_pelanggan' => $membership->pelanggan->name,
+                    'start_date'     => $membership->start_date,
+                    'end_date'       => $membership->end_date,
+                    'payment_amount' => $membership->payment_amount,
+                ];
+            });
 
         //return collection
         return new PostResource(true, 'List Data Membership', $memberships);
